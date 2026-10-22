@@ -1,37 +1,6 @@
 import math
-from unittest import case
 from GUI import GUI
-
-
-class sphere:
-    def __init__(self, radius):
-        self.radius = radius
-    
-    def get_z_by_coordinates(self, x,y):
-        if x**2 + y**2 <= self.radius**2:
-            z = math.sqrt(round(self.radius**2 - x**2 - y**2, 5)) #rounding to avoid floating point errors
-            return z
-        else:
-            return -1
-    def get_radius(self):
-        return self.radius
-
-
-
-class light:
-    def __init__(self, x,y, z):
-        self.x = x
-        self.y = y
-        self.z = z
-
-    def dot_product(self, x,y, z):
-        return self.x * x + self.y * y + self.z * z
-
-    def get_intensity(self, x,y,z, r):
-        dot = self.dot_product(x,y,z)
-        b = dot/(r**2)
-        return b
-
+from objects import sphere, light
 
 
 class simulation:
@@ -40,27 +9,22 @@ class simulation:
         self.light = light
         self.step_count_x = step_count_x
         self.step_count_y = step_count_y
-        self.margin = 1.2
+        self.margin = 1.5
 
         self.gui = GUI(self)
-
-    def set_step_count_x(self, step_count_x):
-        self.step_count_x = step_count_x
-    def set_step_count_y(self, step_count_y):
-        self.step_count_y = step_count_y
     
     
     def run(self):
 
 
         scene = ''
-        
 
 
+        #this loop iterates through the grid and uses calculations to determine the light intensity at each point
         for i in range(self.step_count_y):
             for j in range(self.step_count_x):
-                x = (self.sphere.radius*self.margin * (2*(j / self.step_count_x) - 1))
-                y = (self.sphere.radius*self.margin * (2*(i / self.step_count_y) - 1))
+                x = (self.sphere.radius*self.margin * (2*j / (self.step_count_x - 1) -1)) #maps grid to -1 to 1 range then scales to radius * margin
+                y = (self.sphere.radius*self.margin * (2*i / (self.step_count_y - 1) -1)) 
                 z = self.sphere.get_z_by_coordinates(x, y)
                 b = self.light.get_intensity(x, y, z, self.sphere.radius)
                 
@@ -75,26 +39,31 @@ class simulation:
                 # x(t)^2 + y(t)^2 + z(t)^2 = r^2 formula for line distance from sphere center
                 
 
-                # t = (r^2 )
+                # solving for t gives us the following quadratic equation:
 
                 if(z == -1):
                     z = 0 #correcting z to 0 if the point is outside the sphere, so that the shadow calculation can be done
-                    t1, t2 = -1,-1
+
+                    t1, t2 = -1, -1
+
+                    #if root is negative, no real solutions exists
                     if (x*light.x + y*light.y + z*light.z)**2 - (light.x**2 + light.y**2 + light.z**2)*(x**2 + y**2 + z**2 - self.sphere.radius**2) >= 0:
                         t1 = (-(x*light.x + y*light.y + z*light.z) + math.sqrt((x*light.x + y*light.y + z*light.z)**2 - (light.x**2 + light.y**2 + light.z**2)*(x**2 + y**2 + z**2 - self.sphere.radius**2)))/(light.x**2 + light.y**2 + light.z**2)
                         t2 = (-(x*light.x + y*light.y + z*light.z) - math.sqrt((x*light.x + y*light.y + z*light.z)**2 - (light.x**2 + light.y**2 + light.z**2)*(x**2 + y**2 + z**2 - self.sphere.radius**2)))/(light.x**2 + light.y**2 + light.z**2)
 
 
                     if(t1>0 or t2>0):
-                        #Confirms that the point intersects with the sphere in the direction of the light source, meaning it is in shadow
+                        #Positive real solutions exists, meaning point is in shadow
                         b = -1
                     else:
                         b = 0
                 
                 #End of inspired code
 
+
+                #Using the intensity to determinte the character displayed
                 if b == -1:
-                    scene += "S"
+                    scene += 'S'
                 elif b <= 0:
                     scene += 'M'
                 elif b <= 0.3:
@@ -120,29 +89,30 @@ class simulation:
 
         
                 
-    
-print('Input radius of the sphere:', end=' ')
-radius = float(input())
-sphere = sphere(radius)
+#    
+#print('Input radius of the sphere:', end=' ')
+#radius = float(input())
+#sphere = sphere(radius)
+#
+#while True:
+#
+#    print('Input x coordinate of the light source:', end=' ')
+#    x = float(input())
+#    print('Input y coordinate of the light source:', end=' ')
+#    y = float(input())
+#    z = sphere.get_z_by_coordinates(x, y)
+#
+#    if z == -1:
+#        print('The light source is outside the sphere. Please enter valid coordinates.', end=' ')
+#        continue
+#    else:
+#        break
+#
+#light = light(x, y, z)
 
-while True:
-
-    print('Input x coordinate of the light source:', end=' ')
-    x = float(input())
-    print('Input y coordinate of the light source:', end=' ')
-    y = float(input())
-    z = sphere.get_z_by_coordinates(x, y)
-
-    if z == -1:
-        print('The light source is outside the sphere. Please enter valid coordinates.', end=' ')
-        continue
-    else:
-        break
-
-light = light(x, y, z)
-
+sphere = sphere(5.0)
+light = light(0, 0, sphere.get_z_by_coordinates(0, 0))
 step_count_x = 100
 step_count_y = 100
 
 simulation = simulation(sphere, light, step_count_x, step_count_y)
-simulation.run()
