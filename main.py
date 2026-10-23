@@ -40,7 +40,7 @@ class simulation:
                 
 
                 # solving for t gives us the following quadratic equation:
-
+                
                 if(z == -1):
                     z = 0 #correcting z to 0 if the point is outside the sphere, so that the shadow calculation can be done
 
