@@ -26,7 +26,7 @@ class simulation:
                 x = (self.sphere.radius*self.margin * (2*j / (self.step_count_x - 1) -1)) #maps grid to -1 to 1 range then scales to radius * margin
                 y = (self.sphere.radius*self.margin * (2*i / (self.step_count_y - 1) -1)) 
                 z = self.sphere.get_z_by_coordinates(x, y)
-                b = self.light.get_intensity(x, y, z, self.sphere.radius)
+                intensity = self.light.get_intensity(x, y, z, self.sphere.radius)
                 
 
                 
@@ -54,25 +54,25 @@ class simulation:
 
                     if(t1>0 or t2>0):
                         #Positive real solutions exists, meaning point is in shadow
-                        b = -1
+                        intensity = -1
                     else:
-                        b = 0
+                        intensity = 0
                 
                 #End of inspired code
 
 
                 #Using the intensity to determinte the character displayed
-                if b == -1:
+                if intensity == -1:
                     scene += 'S'
-                elif b <= 0:
+                elif intensity <= 0:
                     scene += 'M'
-                elif b <= 0.3:
+                elif intensity <= 0.3:
                     scene += '*'
-                elif b <= 0.5:
+                elif intensity <= 0.5:
                     scene += '+'
-                elif b <= 0.7:
+                elif intensity <= 0.7:
                     scene += '-'
-                elif b <= 0.9:
+                elif intensity <= 0.9:
                     scene += '.'
                 else:
                     scene += ' '

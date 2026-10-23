@@ -12,8 +12,6 @@ class sphere:
             return z
         else:
             return -1
-    def get_radius(self):
-        return self.radius
 
 
 
@@ -28,6 +26,6 @@ class light:
 
     def get_intensity(self, x,y,z, r):
         dot = self.dot_product(x,y,z)
-        b = dot/(r**2)
-        return b
+        intensity = dot/(r**2)
+        return intensity
 
