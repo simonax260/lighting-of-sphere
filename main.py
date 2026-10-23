@@ -44,15 +44,15 @@ class simulation:
                 if(z == -1):
                     z = 0 #correcting z to 0 if the point is outside the sphere, so that the shadow calculation can be done
 
-                    t1, t2 = -1, -1
+                    solution1, solution2 = -1, -1 #t1 and t2
 
                     #if root is negative, no real solutions exists
                     if (x*light.x + y*light.y + z*light.z)**2 - (light.x**2 + light.y**2 + light.z**2)*(x**2 + y**2 + z**2 - self.sphere.radius**2) >= 0:
-                        t1 = (-(x*light.x + y*light.y + z*light.z) + math.sqrt((x*light.x + y*light.y + z*light.z)**2 - (light.x**2 + light.y**2 + light.z**2)*(x**2 + y**2 + z**2 - self.sphere.radius**2)))/(light.x**2 + light.y**2 + light.z**2)
-                        t2 = (-(x*light.x + y*light.y + z*light.z) - math.sqrt((x*light.x + y*light.y + z*light.z)**2 - (light.x**2 + light.y**2 + light.z**2)*(x**2 + y**2 + z**2 - self.sphere.radius**2)))/(light.x**2 + light.y**2 + light.z**2)
+                        solution1 = (-(x*light.x + y*light.y + z*light.z) + math.sqrt((x*light.x + y*light.y + z*light.z)**2 - (light.x**2 + light.y**2 + light.z**2)*(x**2 + y**2 + z**2 - self.sphere.radius**2)))/(light.x**2 + light.y**2 + light.z**2)
+                        solution2 = (-(x*light.x + y*light.y + z*light.z) - math.sqrt((x*light.x + y*light.y + z*light.z)**2 - (light.x**2 + light.y**2 + light.z**2)*(x**2 + y**2 + z**2 - self.sphere.radius**2)))/(light.x**2 + light.y**2 + light.z**2)
 
 
-                    if(t1>0 or t2>0):
+                    if(solution1>0 or solution2>0):
                         #Positive real solutions exists, meaning point is in shadow
                         intensity = -1
                     else:
